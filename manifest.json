@@ -1,14 +1,14 @@
 {
 	"name": "Etsy Sold!",
 	"description": "Reveals the sale price of an out-of-stock Etsy listing.",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"manifest_version": 2,
 	"icons": {
 		"122": "icon.png"
 	},
 	"content_scripts": [
 		{
-			"matches": ["https://www.etsy.com/*"],
+			"matches": ["https://www.etsy.com/listing/*"],
 			"js": ["etsy-sold.js"]
 		}
 	],
