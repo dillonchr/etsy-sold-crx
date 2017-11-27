@@ -12,7 +12,7 @@
 	"content_scripts": [
 		{
 			"matches": ["https://www.etsy.com/listing/*"],
-			"js": ["etsy-sold.js"]
+			"js": ["etsy-sold.js", "content.js"]
 		}
 	],
 	"permissions": [

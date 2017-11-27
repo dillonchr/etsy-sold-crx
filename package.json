@@ -1,0 +1,26 @@
+{
+  "name": "etsy-sold-crx",
+  "version": "1.0.5",
+  "description": "chrome extension to show sold-out price on etsy",
+  "main": "etsy-sold.js",
+  "scripts": {
+    "test": "tape test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dillonchr/etsy-sold-crx.git"
+  },
+  "keywords": [
+    "etsy"
+  ],
+  "author": "dillonchr",
+  "license": "GPL-2.0",
+  "bugs": {
+    "url": "https://github.com/dillonchr/etsy-sold-crx/issues"
+  },
+  "homepage": "https://github.com/dillonchr/etsy-sold-crx#readme",
+  "devDependencies": {
+    "jsdom": "^11.5.1",
+    "tape": "^4.8.0"
+  }
+}
