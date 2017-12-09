@@ -2,15 +2,15 @@
     //  this prevents the need to parse XML/JSON, but introduces risks of format changing
     const priceRegex = /"highPrice": "(\d+\.?\d*)"/;
     //  risky as well, depends on too much classiness
-    const cards = Array.from(document.querySelectorAll('a.buyer-card.card'));
+    const cards = Array.from(document.querySelectorAll('a.buyer-card.card, .v2-listing-card a.listing-link'));
     //  brutishly simple async attempt
     const queue = cards.map(elem => {
         //  url with the required json+ld
         const url = elem.getAttribute('href').replace(/\?(ref=.*)$/, '?show_sold_out_detail=1');
         //  append price (or message) to the little `Sold` badge on each card.
         const updateSoldLabel = price => elem
-            .querySelector('.strong.text-gray > span')
-            .insertAdjacentHTML('afterend', `<span style="color:red;margin-left:1em;">${price}</span>`);
+            .querySelector('.n-listing-card__price')
+            .insertAdjacentHTML('beforeend', `<span style="color:red;margin-left:1em;">${price}</span>`);
         //  callback to delay the fetch
         return () => {
             //  download page
