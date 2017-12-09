@@ -2,7 +2,7 @@
     //  this prevents the need to parse XML/JSON, but introduces risks of format changing
     const priceRegex = /"highPrice": "(\d+\.?\d*)"/;
     //  risky as well, depends on too much classiness
-    const cards = Array.from(document.querySelectorAll('a.buyer-card.card, .v2-listing-card a.listing-link'));
+    const cards = Array.from(document.querySelectorAll('.v2-listing-card a.listing-link'));
     //  brutishly simple async attempt
     const queue = cards.map(elem => {
         //  url with the required json+ld
