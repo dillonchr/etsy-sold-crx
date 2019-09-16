@@ -18,8 +18,23 @@
 
     //    injects element in the style of the normal price
     function displaySoldPrice({currency, price}) {
-        document.querySelector('#listing-properties, .buy-box__buttons')
-            .insertAdjacentHTML('beforebegin', `<span style='float:left;color:red;font-size:20px;font-weight:bold;'><span class='currency-symbol'>${currency === 'USD' ? '$' : currency}</span><span class='currency-value'>${price}</span></span>`);
+        const htmlToInject = `<p style='color:red;margin-bottom:1rem;font-size:20px;font-weight:bold;'>${currency === 'USD' ? '$' : currency} ${price}</p>`;
+        //  try old querySelector first
+        let hookElement = document.querySelector('#listing-properties, .buy-box__buttons');
+        if (hookElement) {
+            //  if it's found, inject price before tag
+            hookElement.insertAdjacentHTML('beforebegin', htmlToInject);
+        } else {
+            //  otherwise look for current layout as of 9-16-19
+            hookElement = document.querySelector('[data-buy-box-region="price"] .text-gray-lighter.text-body-smaller');
+            //  if it's there
+            if (hookElement) {
+                //  add before the tag closes
+                hookElement.insertAdjacentHTML('beforeend', htmlToInject);
+            }
+        }
+        //  always print the currency/price
+        console.log('%cETSY SOLD!', 'background-color:#F56400;color:white;', currency, price);
     }
 
     //    conditionally injects the price
