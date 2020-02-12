@@ -5,6 +5,21 @@
             window.location.search.includes('show_sold_out');
     }
 
+    function getCurrencyPrefix(currency) {
+        switch (currency) {
+            case 'USD':
+            case 'CAD':
+            case 'AUD':
+                return '$';
+            case 'EUR':
+                return '€';
+            case 'GBP':
+                return '£';
+            default:
+                return currency;
+        }
+    }
+
     function parseHighPrice(price) {
         let str = price;
         try {
@@ -26,7 +41,8 @@
 
     //    injects element in the style of the normal price
     function displaySoldPrice({currency, price}) {
-        const htmlToInject = `<p style='color:red;margin-bottom:1rem;font-size:20px;font-weight:bold;'>${currency === 'USD' ? '$' : currency} ${price}</p>`;
+        const currencySymbol = getCurrencyPrefix(currency);
+        const htmlToInject = `<p style='color:red;margin-bottom:1rem;font-size:20px;font-weight:bold;'>${currencySymbol} ${price}</p>`;
         //  try old querySelector first
         let hookElement = document.querySelector('#listing-properties, .buy-box__buttons');
         if (hookElement) {
@@ -42,7 +58,7 @@
             }
         }
         //  always print the currency/price
-        console.log('%cETSY SOLD!', 'background-color:#F56400;color:white;', currency, price);
+        console.log('%cETSY SOLD!', 'background-color:#F56400;color:white;', currencySymbol, price);
     }
 
     //    conditionally injects the price
