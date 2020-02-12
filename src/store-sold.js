@@ -59,8 +59,9 @@
 
                     if (priceMatch && priceMatch.length > 1) {
                         //  TODO: respect locales
-                        pageTotal += parseFloat(`${priceMatch[1]}.${priceMatch[2]}`);
-                        updateSoldLabel(`${currencySymbol}${priceMatch[1]}`);
+                        const priceUSFloat = parseFloat(`${priceMatch[1]}.${priceMatch[2]}`)
+                        pageTotal += priceUSFloat;
+                        updateSoldLabel(`${currencySymbol}${Math.round(priceUSFloat)}`);
                     } else {
                         //  haven't seen this happen yet, but just in case
                         updateSoldLabel('N/A');
