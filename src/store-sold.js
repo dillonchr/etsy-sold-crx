@@ -58,6 +58,7 @@
                     const priceMatch = html.match(RE.PRICE);
 
                     if (priceMatch && priceMatch.length > 1) {
+                        //  TODO: respect locales
                         pageTotal += parseFloat(`${priceMatch[1]}.${priceMatch[2]}`);
                         updateSoldLabel(`${currencySymbol}${priceMatch[1]}`);
                     } else {

@@ -1,5 +1,4 @@
 (() => {
-    //    lets us know if we should look for the sold price or not
     function isSoldListing() {
         return !!document.querySelector('.btn-transaction.disabled') ||
             window.location.search.includes('show_sold_out');
@@ -20,21 +19,16 @@
         }
     }
 
-    function parseHighPrice(price) {
-        let str = price;
-        try {
-            const [ignore, wholes, fractions] = pr.match(/^([0-9 .,]+)[,.](\d{2})$/);
-            str = `${wholes}.${fractions}`;
-        } catch (ignore) { }
-        return parseFloat(str).toFixed(2);
-    }
-
     //    parses etsy event stream for sold price
     function getSoldPrice() {
         try {
             if (isSoldListing()) {
                 const seoData = JSON.parse(document.querySelector(`script[type='application/ld+json']`).innerHTML).offers;
-                return {currency: seoData.priceCurrency, price: parseHighPrice(seoData.highPrice)};
+
+                return {
+                    currency: seoData.priceCurrency,
+                    price: seoData.highPrice
+                };
             }
         } catch (ignore) { }
     }
