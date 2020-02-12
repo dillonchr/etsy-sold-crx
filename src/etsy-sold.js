@@ -1,7 +1,22 @@
 (() => {
-    //    lets us know if we should look for the sold price or not
     function isSoldListing() {
-        return !!document.querySelector('.btn-transaction.disabled') || window.location.search.includes('show_sold_out');
+        return !!document.querySelector('.btn-transaction.disabled') ||
+            window.location.search.includes('show_sold_out');
+    }
+
+    function getCurrencyPrefix(currency) {
+        switch (currency) {
+            case 'USD':
+            case 'CAD':
+            case 'AUD':
+                return '$';
+            case 'EUR':
+                return '€';
+            case 'GBP':
+                return '£';
+            default:
+                return currency;
+        }
     }
 
     //    parses etsy event stream for sold price
@@ -9,16 +24,19 @@
         try {
             if (isSoldListing()) {
                 const seoData = JSON.parse(document.querySelector(`script[type='application/ld+json']`).innerHTML).offers;
-                return {currency: seoData.priceCurrency, price: parseFloat(seoData.highPrice).toFixed(2)};
+
+                return {
+                    currency: seoData.priceCurrency,
+                    price: seoData.highPrice
+                };
             }
-        } catch (ignore) {
-            return;
-        }
+        } catch (ignore) { }
     }
 
     //    injects element in the style of the normal price
     function displaySoldPrice({currency, price}) {
-        const htmlToInject = `<p style='color:red;margin-bottom:1rem;font-size:20px;font-weight:bold;'>${currency === 'USD' ? '$' : currency} ${price}</p>`;
+        const currencySymbol = getCurrencyPrefix(currency);
+        const htmlToInject = `<p style='color:red;margin-bottom:1rem;font-size:20px;font-weight:bold;'>${currencySymbol} ${price}</p>`;
         //  try old querySelector first
         let hookElement = document.querySelector('#listing-properties, .buy-box__buttons');
         if (hookElement) {
@@ -34,7 +52,7 @@
             }
         }
         //  always print the currency/price
-        console.log('%cETSY SOLD!', 'background-color:#F56400;color:white;', currency, price);
+        console.log('%cETSY SOLD!', 'background-color:#F56400;color:white;', currencySymbol, price);
     }
 
     //    conditionally injects the price
