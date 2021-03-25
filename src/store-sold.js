@@ -20,23 +20,20 @@
   //    sum all found prices for the current page
   let pageTotal = 0;
 
-  //  hope that it's one of the covered currencies!
-  const getCurrencyPrefix = match => {
-    if (match && match.length) {
-      switch (match[1]) {
-        case "USD":
-        case "CAD":
-        case "AUD":
-          return "$";
-        case "EUR":
-          return "€";
-        case "GBP":
-          return "£";
-        default:
-          return match[1];
+  function getPrice(line) {
+    const maybePrice = line.match(/"listing_price":(\d+)/);
+    const maybeCurrency = line.match(/"currency_data":.*"symbol":"([^"])"/);
+    if (maybePrice && maybeCurrency) {
+      if (!currencySymbol) {
+        currencySymbol = maybeCurrency[1];
       }
+
+      return {
+        symbol: maybeCurrency[1],
+        price: +maybePrice[1]
+      };
     }
-  };
+  }
 
   //  brutishly simple async attempt
   const queue = cards.map(elem => {
@@ -61,19 +58,18 @@
           //  dump response
           .then(r => r.ok && r.text())
           .then(html => {
-            if (!currencySymbol) {
-              currencySymbol = getCurrencyPrefix(html.match(RE.CURRENCY));
+            let price = null;
+
+            for (const line of html.split("\n")) {
+              if (line.includes("window.Etsy=window.Etsy||{};Etsy.Context={")) {
+                price = getPrice(line);
+                break;
+              }
             }
 
-            const priceMatch = html.match(RE.PRICE);
-
-            if (priceMatch && priceMatch.length > 1) {
-              //  TODO: respect locales
-              const priceUSFloat = parseFloat(
-                `${priceMatch[1]}.${priceMatch[2]}`
-              );
-              pageTotal += priceUSFloat;
-              updateSoldLabel(`${currencySymbol}${Math.round(priceUSFloat)}`);
+            if (price) {
+              pageTotal += price.price;
+              updateSoldLabel(`${price.symbol}${price.price.toFixed(2)}`);
             } else {
               //  haven't seen this happen yet, but just in case
               updateSoldLabel("N/A");
@@ -87,7 +83,7 @@
               "background-color:#F56400;color:white;",
               "%cStore Page Error",
               "font-weight:bold;",
-              err
+              err.getMessage()
             );
           })
       );
