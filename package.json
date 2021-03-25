@@ -1,0 +1,19 @@
+{
+  "name": "etsy-sold-crx",
+  "version": "1.0.0",
+  "description": "This is a Google Chrome extension that can extract the sale price of an out-of-stock Etsy listing and display it in a friendly way automatically.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dillonchr/etsy-sold-crx.git"
+  },
+  "author": "",
+  "license": "GPL-2.0",
+  "bugs": {
+    "url": "https://github.com/dillonchr/etsy-sold-crx/issues"
+  },
+  "homepage": "https://github.com/dillonchr/etsy-sold-crx#readme"
+}
