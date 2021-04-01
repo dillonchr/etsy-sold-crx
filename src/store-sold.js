@@ -22,14 +22,15 @@
 
   function getPrice(line) {
     const maybePrice = line.match(/"listing_price":(\d+)/);
-    const maybeCurrency = line.match(/"currency_data":.*"symbol":"([^"])"/);
+    const maybeCurrency = line.match(/"currency_data":.*"symbol":"([^"]+)"/);
     if (maybePrice && maybeCurrency) {
+      const symbol = JSON.parse(`"${maybeCurrency[1]}"`);
       if (!currencySymbol) {
-        currencySymbol = maybeCurrency[1];
+        currencySymbol = symbol;
       }
 
       return {
-        symbol: maybeCurrency[1],
+        symbol,
         price: +maybePrice[1]
       };
     }
@@ -37,7 +38,6 @@
 
   //  brutishly simple async attempt
   const queue = cards.map(elem => {
-    //  url with the required json+ld
     const url = elem
       .getAttribute("href")
       .replace(RE.LISTING_URL, "?show_sold_out_detail=1");
