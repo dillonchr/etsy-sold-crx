@@ -1,11 +1,8 @@
 ((numberOfSimultaneousRequests = 1) => {
   //  Regexes needed
   //  this prevents the need to parse XML/JSON, but introduces risks of format changing
-  const RE = {
-    LISTING_URL: /\?(ref=.*)$/,
-    CURRENCY: /"priceCurrency": "([A-Z]+)",/,
-    PRICE: /"highPrice": "([0-9 .,]+)[,.](\d{2})"/
-  };
+  const RE_LISTING_PRICE = /"listing_price":(\d+)/;
+  const RE_CURRENCY_SYMBOL = /"currency_data":.*"symbol":"([^"]+)"/;
 
   //  risky as well, depends on too much classiness
   const cards = Array.from(
@@ -21,8 +18,8 @@
   let pageTotal = 0;
 
   function getPrice(line) {
-    const maybePrice = line.match(/"listing_price":(\d+)/);
-    const maybeCurrency = line.match(/"currency_data":.*"symbol":"([^"]+)"/);
+    const maybePrice = line.match(RE_LISTING_PRICE);
+    const maybeCurrency = line.match(RE_CURRENCY_SYMBOL);
     if (maybePrice && maybeCurrency) {
       const symbol = JSON.parse(`"${maybeCurrency[1]}"`);
       if (!currencySymbol) {
@@ -38,9 +35,8 @@
 
   //  brutishly simple async attempt
   const queue = cards.map(elem => {
-    const url = elem
-      .getAttribute("href")
-      .replace(RE.LISTING_URL, "?show_sold_out_detail=1");
+    const url =
+      elem.getAttribute("href").split("?")[0] + "?show_sold_out_detail=1";
 
     //  append price (or message) to the little `Sold` badge on each card.
     const updateSoldLabel = price =>
@@ -61,7 +57,7 @@
             let price = null;
 
             for (const line of html.split("\n")) {
-              if (line.includes("window.Etsy=window.Etsy||{};Etsy.Context={")) {
+              if (RE_LISTING_PRICE.test(line)) {
                 price = getPrice(line);
                 break;
               }
@@ -115,4 +111,5 @@
   //  this creates as many "thread"s as requested
   //  keep this low to prevent ui thrashing and possibly even network troubles
   const requests = Array(numberOfSimultaneousRequests).fill(0).forEach(thread);
+  return requests;
 })(4);
